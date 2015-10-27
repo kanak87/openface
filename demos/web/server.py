@@ -244,7 +244,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
                  'gamma': [0.001, 0.0001],
                  'kernel': ['rbf']}
             ]
-            self.svm = GridSearchCV(SVC(C=1), param_grid, cv=5).fit(X, y)
+            self.svm = GridSearchCV(SVC(C=1, probability=True), param_grid, cv=5).fit(X, y)
 
     def processFrame(self, dataURL, identity):
         head = "data:image/jpeg;base64,"
@@ -351,10 +351,16 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
             self.sendMessage(json.dumps(msg))
 
 if __name__ == '__main__':
-    log.startLogging(sys.stdout)
+    while True:
+        log.startLogging(sys.stdout)
 
-    factory = WebSocketServerFactory("ws://localhost:9000", debug=False)
-    factory.protocol = OpenFaceServerProtocol
+        try:
+            factory = WebSocketServerFactory("ws://localhost:9000", debug=False)
+            factory.protocol = OpenFaceServerProtocol
 
-    reactor.listenTCP(9000, factory)
-    reactor.run()
+            reactor.listenTCP(9000, factory)
+            reactor.run()
+
+        except Exception as e:
+            print e.message;
+            print 'Exception occured, Restart.'

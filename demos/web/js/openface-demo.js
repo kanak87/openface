@@ -325,7 +325,8 @@ function changeServerCallback() {
     case "CMU":
         socket.close();
         redrawPeople();
-        createSocket("ws://facerec.cmusatyalab.org:9000", "CMU");
+        //createSocket("ws://facerec.cmusatyalab.org:9000", "CMU");
+        createSocket("ws:127.0.0.1:9000", "Local");
         break;
     case "AWS East":
         socket.close();
